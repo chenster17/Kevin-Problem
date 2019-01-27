@@ -12,5 +12,8 @@ public class App
         HttpServer server = HttpServer.create(new InetSocketAddress("0.0.0.0", PORT), 0);
         server.start();
         System.out.printf("Server started on port %d...\n", PORT);
+        System.out.printf("Hello World\n");
+        server.stop(1);
+        System.out.printf("Sever stopped");
     }
 }
