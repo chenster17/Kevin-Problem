@@ -14,6 +14,6 @@ public class App
         System.out.printf("Server started on port %d...\n", PORT);
         System.out.printf("Hello World\n");
         server.stop(1);
-        System.out.printf("Sever stopped");
+        System.out.printf("Server stopped");
     }
 }
