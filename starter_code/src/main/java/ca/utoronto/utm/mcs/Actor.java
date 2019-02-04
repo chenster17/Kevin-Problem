@@ -27,12 +27,24 @@ public class Actor implements HttpHandler
         }
     }
 
-    public void handleGet(HttpExchange r) throws IOException, JSONException {
+    public void handleGet(HttpExchange r) throws Exception {
         String body = Utils.convert(r.getRequestBody());
         JSONObject deserialized = new JSONObject(body);
-        String actorId;
+        String actorId = "";
+        String res= "";
         if (deserialized.has("actorId"))
         	actorId = deserialized.getString("actorId");
+        
+        
+        try ( Query actor = new Query( "bolt://localhost:7687", "neo4j", "a" ) )
+        {
+        	res = actor.getActor( actorId );
+        }
+        
+        r.sendResponseHeaders(200, res.length());
+        OutputStream os = r.getResponseBody();
+        os.write(res.getBytes());
+        os.close();
         
     }
 
