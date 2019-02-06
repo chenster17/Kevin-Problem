@@ -125,4 +125,37 @@ public class Query implements AutoCloseable
         }
 		return movieGet;
     }
+
+	public void putActor(String actorId, String actorN) {
+        try ( Session session = driver.session() )
+        {
+        	session.writeTransaction( new TransactionWork<JSONObject>()
+            {
+                @Override
+                public void execute( Transaction tx )
+                {
+                	StatementResult MakeActor =  tx.run(
+                    								"CREATE (a:actor {actorId: $aId, name:$name})",
+                            parameters( "aId","name", actorId, actorN));
+
+                                      
+
+                
+			 catch (NoSuchRecordException e) {
+
+						e.printStackTrace();
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+
+                }
+            } );
+
+        }
+		
+	}
+
+
+
+	
 }
