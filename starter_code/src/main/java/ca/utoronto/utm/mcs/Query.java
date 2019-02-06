@@ -31,10 +31,10 @@ public class Query implements AutoCloseable
 
     public JSONObject getActor( final String actorId )
     {
-    	JSONObject actor=new JSONObject();
+    	JSONObject actorGet=new JSONObject();
         try ( Session session = driver.session() )
         {
-            actor = session.writeTransaction( new TransactionWork<JSONObject>()
+        	actorGet = session.writeTransaction( new TransactionWork<JSONObject>()
             {
                 @Override
                 public JSONObject execute( Transaction tx )
@@ -51,16 +51,16 @@ public class Query implements AutoCloseable
 							parameters( "aId", actorId) );
                                       
 
-                	JSONObject aJO = new JSONObject();
-                	List <Record> myList = resultMovie.list();
+                	JSONObject aGJO = new JSONObject();
+                	List <Record> myGAList = resultMovie.list();
                 
 					try {
-						aJO = new JSONObject();
-						for(int i= 0; i<myList.size();i++) {
-							aJO.accumulate("movies", myList.get(i).get(0).asObject());
+						aGJO = new JSONObject();
+						for(int i= 0; i<myGAList.size();i++) {
+							aGJO.accumulate("movies", myGAList.get(i).get(0).asObject());
 						}
-						aJO.accumulate("actorId",resultActorId.single().get(0).asObject());
-						aJO.accumulate("name",resultActorName.single().get(0).asObject());
+						aGJO.accumulate("actorId",resultActorId.single().get(0).asObject());
+						aGJO.accumulate("name",resultActorName.single().get(0).asObject());
 
 						
 					} catch (NoSuchRecordException e) {
@@ -70,11 +70,59 @@ public class Query implements AutoCloseable
 						e.printStackTrace();
 					}
 
-                    return aJO;
+                    return aGJO;
                 }
             } );
 
         }
-		return actor;
+		return actorGet;
+    }
+    public JSONObject getMovie( final String movieId )
+    {
+    	JSONObject movieGet=new JSONObject();
+        try ( Session session = driver.session() )
+        {
+        	movieGet = session.writeTransaction( new TransactionWork<JSONObject>()
+            {
+                @Override
+                public JSONObject execute( Transaction tx )
+                {
+                	StatementResult resultActor =  tx.run(
+                									"MATCH (m:movie {movieId:$mId})-[r:ACTED_IN]->(actors)"+
+                    								" return actors.actors.Id;",
+                            parameters( "mId", movieId) );
+                	StatementResult resultMovieId =  tx.run(
+													"MATCH (m:movie {movieId:$mId}) return distinct m.movieId;" ,
+							parameters( "mId", movieId) );
+                	StatementResult resultMovieName =  tx.run(
+													"MATCH (m:movie {movieId:$mId}) return distinct m.name;" ,
+							parameters( "mId", movieId) );
+                                      
+
+                	JSONObject mGJO = new JSONObject();
+                	List <Record> myGMList = resultActor.list();
+                
+					try {
+						mGJO = new JSONObject();
+						for(int i= 0; i<myGMList.size();i++) {
+							mGJO.accumulate("movies", myGMList.get(i).get(0).asObject());
+						}
+						mGJO.accumulate("actorId",resultMovieId.single().get(0).asObject());
+						mGJO.accumulate("name",resultMovieName.single().get(0).asObject());
+
+						
+					} catch (NoSuchRecordException e) {
+
+						e.printStackTrace();
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+
+                    return mGJO;
+                }
+            } );
+
+        }
+		return movieGet;
     }
 }
