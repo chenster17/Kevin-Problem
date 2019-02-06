@@ -105,9 +105,9 @@ public class Query implements AutoCloseable
 					try {
 						mGJO = new JSONObject();
 						for(int i= 0; i<myGMList.size();i++) {
-							mGJO.accumulate("movies", myGMList.get(i).get(0).asObject());
+							mGJO.accumulate("actors", myGMList.get(i).get(0).asObject());
 						}
-						mGJO.accumulate("actorId",resultMovieId.single().get(0).asObject());
+						mGJO.accumulate("movieId",resultMovieId.single().get(0).asObject());
 						mGJO.accumulate("name",resultMovieName.single().get(0).asObject());
 
 						
