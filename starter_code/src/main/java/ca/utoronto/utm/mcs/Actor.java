@@ -30,8 +30,9 @@ public class Actor implements HttpHandler
     public void handleGet(HttpExchange r) throws Exception {
         String body = Utils.convert(r.getRequestBody());
         JSONObject deserialized = new JSONObject(body);
+        
         String actorId = "";
-        String res= "";
+        JSONObject res = new JSONObject();
         if (deserialized.has("actorId"))
         	actorId = deserialized.getString("actorId");
         
@@ -40,10 +41,10 @@ public class Actor implements HttpHandler
         {
         	res = actor.getActor( actorId );
         }
-        
-        r.sendResponseHeaders(200, res.length());
+
+        r.sendResponseHeaders(200, res.toString().length());
         OutputStream os = r.getResponseBody();
-        os.write(res.getBytes());
+        os.write(res.toString().getBytes());
         os.close();
         
     }
