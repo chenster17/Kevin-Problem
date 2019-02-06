@@ -88,8 +88,8 @@ public class Query implements AutoCloseable
                 public JSONObject execute( Transaction tx )
                 {
                 	StatementResult resultActor =  tx.run(
-                									"MATCH (m:movie {movieId:$mId})-[r:ACTED_IN]->(actors)"+
-                    								" return actors.actors.Id;",
+                									"MATCH (m:movie {movieId:$mId})<-[r:ACTED_IN]-(actors)"+
+                    								" return actors.actorId;",
                             parameters( "mId", movieId) );
                 	StatementResult resultMovieId =  tx.run(
 													"MATCH (m:movie {movieId:$mId}) return distinct m.movieId;" ,
@@ -101,7 +101,7 @@ public class Query implements AutoCloseable
 
                 	JSONObject mGJO = new JSONObject();
                 	List <Record> myGMList = resultActor.list();
-                
+
 					try {
 						mGJO = new JSONObject();
 						for(int i= 0; i<myGMList.size();i++) {
@@ -127,33 +127,7 @@ public class Query implements AutoCloseable
     }
 
 	public void putActor(String actorId, String actorN) {
-        try ( Session session = driver.session() )
-        {
-        	session.writeTransaction( new TransactionWork<JSONObject>()
-            {
-                @Override
-                public void execute( Transaction tx )
-                {
-                	StatementResult MakeActor =  tx.run(
-                    								"CREATE (a:actor {actorId: $aId, name:$name})",
-                            parameters( "aId","name", actorId, actorN));
-
-                                      
-
-                
-			 catch (NoSuchRecordException e) {
-
-						e.printStackTrace();
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-
-                }
-            } );
-
-        }
-		
-	}
+}
 
 
 
