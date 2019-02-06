@@ -40,23 +40,19 @@ public class Query implements AutoCloseable
                 public JSONObject execute( Transaction tx )
                 {
                 	StatementResult resultMovie =  tx.run(
-                									"MATCH (a:actor {id:$aId})-[r:ACTED_IN]->(movies)"+
-                    								" return movies.id;",
+                									"MATCH (a:actor {actorId:$aId})-[r:ACTED_IN]->(movies)"+
+                    								" return movies.movieId;",
                             parameters( "aId", actorId) );
                 	StatementResult resultActorId =  tx.run(
-								"MATCH (a:actor {id:$aId}) return distinct a.id;" ,
+													"MATCH (a:actor {actorId:$aId}) return distinct a.actorId;" ,
 							parameters( "aId", actorId) );
                 	StatementResult resultActorName =  tx.run(
-								"MATCH (a:actor {id:$aId}) return distinct a.name;" ,
+													"MATCH (a:actor {actorId:$aId}) return distinct a.name;" ,
 							parameters( "aId", actorId) );
                                       
-                
-                	
-                	
-                	
+
                 	JSONObject aJO = new JSONObject();
                 	List <Record> myList = resultMovie.list();
-     
                 
 					try {
 						aJO = new JSONObject();
@@ -65,15 +61,12 @@ public class Query implements AutoCloseable
 						}
 						aJO.accumulate("actorId",resultActorId.single().get(0).asObject());
 						aJO.accumulate("name",resultActorName.single().get(0).asObject());
-						
-						
-						
+
 						
 					} catch (NoSuchRecordException e) {
 
 						e.printStackTrace();
 					} catch (JSONException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
