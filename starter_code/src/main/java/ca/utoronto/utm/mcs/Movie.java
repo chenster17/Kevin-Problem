@@ -39,7 +39,7 @@ public class Movie implements HttpHandler
         
         try ( Query movie = new Query( "bolt://localhost:7687", "neo4j", "a" ) )
         {
-        	res = movie.getActor( movieId );
+        	res = movie.getMovie( movieId );
         }
 
         r.sendResponseHeaders(200, res.toString().length());

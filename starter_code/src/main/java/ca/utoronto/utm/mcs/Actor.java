@@ -49,16 +49,19 @@ public class Actor implements HttpHandler
         
     }
 
-    public void handlePut(HttpExchange r) throws IOException, JSONException{
+    public void handlePut(HttpExchange r) throws Exception{
         String body = Utils.convert(r.getRequestBody());
         JSONObject deserialized = new JSONObject(body);
-        String actorId;
-        String actorN;
-        if (deserialized.has("actorId")) {
+        String actorId = "";
+        String actorN = "";
+        if (deserialized.has("actorId") && deserialized.has("name")) {
         	actorId = deserialized.getString("actorId");
-        }
-        if (deserialized.has("name")) {
         	actorN = deserialized.getString("name");
         }
+        try ( Query actor = new Query( "bolt://localhost:7687", "neo4j", "a" ) )
+        {
+        	actor.putActor( actorId , actorN);
+        }
+
     }
 }

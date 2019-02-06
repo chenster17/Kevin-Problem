@@ -12,9 +12,9 @@ public class App
         HttpServer server = HttpServer.create(new InetSocketAddress("0.0.0.0", PORT), 0);
         server.createContext("/api/v1/addActor", new Actor());
         server.createContext("/api/v1/getActor", new Actor());
-        /*
         server.createContext("/api/v1/addMovie", new Movie());
         server.createContext("/api/v1/getMovie", new Movie());
+        /*
         server.createContext("/api/v1/addRelationship", new Relationship());
         server.createContext("/api/v1/hasRelationship", new Relationship()); */
         
