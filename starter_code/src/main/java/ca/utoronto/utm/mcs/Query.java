@@ -127,8 +127,6 @@ public class Query implements AutoCloseable
     }
 
 	public void putActor(String actorId, String actorN) {
-
-
         try ( Session session = driver.session() )
         {
         	session.writeTransaction( new TransactionWork<JSONObject>()
@@ -136,8 +134,28 @@ public class Query implements AutoCloseable
                 @Override
                 public JSONObject execute( Transaction tx )
                 {
-                	tx.run("CREATE (a:actor {actorId: $aId, name: $aName});",
-                            parameters("aId",actorId, "aName",actorN));
+                	tx.run("CREATE (a:actor {actorId:$aId, name: $aName})",
+                			parameters("aId",actorId, "aName",actorN));
+                	JSONObject not = new JSONObject();
+					return not;
+                
+
+                }
+            } );
+
+        }
+		
+}
+	public void putMovie(String movieId, String movieN) {
+        try ( Session session = driver.session() )
+        {
+        	session.writeTransaction( new TransactionWork<JSONObject>()
+            {
+                @Override
+                public JSONObject execute( Transaction tx )
+                {
+                	tx.run("CREATE (m:movie {movieId:$mId, name: $mName})",
+                			parameters("mId",movieId, "aName",movieN));
                 	JSONObject not = new JSONObject();
 					return not;
                 
