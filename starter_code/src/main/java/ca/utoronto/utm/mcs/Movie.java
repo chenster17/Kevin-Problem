@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.json.*;
+import org.neo4j.driver.v1.exceptions.NoSuchRecordException;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -41,6 +42,9 @@ public class Movie implements HttpHandler
         try ( Query movie = new Query( "bolt://localhost:7687", "neo4j", "a" ) )
         {
         	res = movie.getMovie( movieId );
+        } catch (NoSuchRecordException e){
+        	r.sendResponseHeaders(404, -1);
+        	return;
         }
 
         r.sendResponseHeaders(200, res.toString().length());
