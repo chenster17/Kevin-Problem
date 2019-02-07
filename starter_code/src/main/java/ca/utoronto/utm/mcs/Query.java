@@ -155,7 +155,7 @@ public class Query implements AutoCloseable
                 public JSONObject execute( Transaction tx )
                 {
                 	tx.run("CREATE (m:movie {movieId:$mId, name: $mName})",
-                			parameters("mId",movieId, "aName",movieN));
+                			parameters("mId",movieId, "mName",movieN));
                 	JSONObject not = new JSONObject();
 					return not;
                 

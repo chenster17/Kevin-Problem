@@ -50,7 +50,7 @@ public class Movie implements HttpHandler
         
     }
 
-    public void handlePut(HttpExchange r) throws IOException, JSONException{
+    public void handlePut(HttpExchange r) throws Exception{
         String body = Utils.convert(r.getRequestBody());
         JSONObject deserialized = new JSONObject(body);
         String movieId;
@@ -64,5 +64,10 @@ public class Movie implements HttpHandler
         	return;
         	
         }
+        try ( Query movie = new Query( "bolt://localhost:7687", "neo4j", "a" ) )
+        {
+        	movie.putMovie( movieId , movieN);
+        }
+        r.sendResponseHeaders(200, -1);
     }
 }
