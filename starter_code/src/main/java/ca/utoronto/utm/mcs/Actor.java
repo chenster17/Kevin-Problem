@@ -11,7 +11,7 @@ import com.sun.net.httpserver.HttpHandler;
 public class Actor implements HttpHandler
 {
 
-    public void handle(HttpExchange r) {
+    public void handle(HttpExchange r) throws IOException {
         try {
             if (r.getRequestMethod().equals("GET")) {
                 handleGet(r);
@@ -20,6 +20,7 @@ public class Actor implements HttpHandler
             }
         } catch (Exception e) {
             e.printStackTrace();
+            r.sendResponseHeaders(500, -1);
         }
     }
 
@@ -29,9 +30,10 @@ public class Actor implements HttpHandler
         
         String actorId = "";
         JSONObject res = new JSONObject();
-        if(deserialized.has("actorId")){
+        if(deserialized.has("actorId") && deserialized.length() == 1){
         	actorId = deserialized.getString("actorId");
         }
+        
         else{
         	r.sendResponseHeaders(400,-1);
         	return;
@@ -55,9 +57,13 @@ public class Actor implements HttpHandler
         JSONObject deserialized = new JSONObject(body);
         String actorId = "";
         String actorN = "";
-        if (deserialized.has("actorId") && deserialized.has("name")) {
+        if (deserialized.has("actorId") && deserialized.has("name") && deserialized.length() == 2) {
         	actorId = deserialized.getString("actorId");
         	actorN = deserialized.getString("name");
+        }
+        else{
+        	r.sendResponseHeaders(400, -1);
+        	return;
         }
         try ( Query actor = new Query( "bolt://localhost:7687", "neo4j", "a" ) )
         {
