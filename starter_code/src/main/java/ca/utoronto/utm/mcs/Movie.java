@@ -11,10 +11,6 @@ import com.sun.net.httpserver.HttpHandler;
 public class Movie implements HttpHandler
 {
 
-
-    public void Add(){
-    }
-
     public void handle(HttpExchange r) {
         try {
             if (r.getRequestMethod().equals("GET")) {

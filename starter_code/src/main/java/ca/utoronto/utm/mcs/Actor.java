@@ -11,10 +11,6 @@ import com.sun.net.httpserver.HttpHandler;
 public class Actor implements HttpHandler
 {
 
-
-    public void Add(){
-    }
-
     public void handle(HttpExchange r) {
         try {
             if (r.getRequestMethod().equals("GET")) {
@@ -62,6 +58,7 @@ public class Actor implements HttpHandler
         {
         	actor.putActor( actorId , actorN);
         }
+        r.sendResponseHeaders(200, -1);
 
     }
 }
