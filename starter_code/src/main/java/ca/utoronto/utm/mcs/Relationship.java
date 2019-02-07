@@ -11,15 +11,53 @@ import com.sun.net.httpserver.HttpHandler;
 
 public class Relationship implements HttpHandler
 {
-	public void handle(HttpExchange r){
+	public void handle(HttpExchange r) throws IOException{
 		try {
             if (r.getRequestMethod().equals("GET")) {
-            	return;
-                //handleGet(r);
+                handleGet(r);
             } else if (r.getRequestMethod().equals("PUT")) {
-            	return;
-                //handlePut(r);
+                handlePut(r);
             }
+		} catch(Exception e) {
+			e.printStackTrace();
+			r.sendResponseHeaders(500,-1);
+		}
+		
 	}
-}
+	
+	public void handleGet(HttpExchange r) throws Exception{
+		String body = Utils.convert(r.getRequestBody());
+		JSONObject deserialized = new JSONObject(body);
+		
+		String actorId = "";
+		String movieId = "";
+		JSONObject res = new JSONObject();
+		
+		if (deserialized.has("actorId") && deserialized.has("movieId") && deserialized.length() == 2) {
+        	actorId = deserialized.getString("actorId");
+        	movieId = deserialized.getString("name");
+        }
+		else{
+			r.sendResponseHeaders(400, -1);
+			return;
+		}
+	}
+	
+	public void handlePut(HttpExchange r) throws Exception{
+		String body = Utils.convert(r.getRequestBody());
+		JSONObject deserialized = new JSONObject(body);
+		
+		String actorId = "";
+		String movieId = "";
+		JSONObject res = new JSONObject();
+		
+		if (deserialized.has("actorId") && deserialized.has("movieId") && deserialized.length() == 2) {
+        	actorId = deserialized.getString("actorId");
+        	movieId = deserialized.getString("name");
+        }
+		else{
+			r.sendResponseHeaders(400, -1);
+			return;
+		}
+	}
 }
