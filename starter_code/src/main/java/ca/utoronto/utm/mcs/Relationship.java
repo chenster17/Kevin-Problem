@@ -35,7 +35,7 @@ public class Relationship implements HttpHandler
 		
 		if (deserialized.has("actorId") && deserialized.has("movieId") && deserialized.length() == 2) {
         	actorId = deserialized.getString("actorId");
-        	movieId = deserialized.getString("name");
+        	movieId = deserialized.getString("movieId");
         }
 		else{
 			r.sendResponseHeaders(400, -1);
