@@ -29,8 +29,13 @@ public class Actor implements HttpHandler
         
         String actorId = "";
         JSONObject res = new JSONObject();
-        if (deserialized.has("actorId"))
+        if(deserialized.has("actorId")){
         	actorId = deserialized.getString("actorId");
+        }
+        else{
+        	r.sendResponseHeaders(400,-1);
+        	return;
+        }
         
         
         try ( Query actor = new Query( "bolt://localhost:7687", "neo4j", "a" ) )
