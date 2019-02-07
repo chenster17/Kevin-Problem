@@ -33,7 +33,7 @@ public class Query implements AutoCloseable
     {
     	JSONObject actorGet=new JSONObject();
         try ( Session session = driver.session() )
-        {
+        {	
         	actorGet = session.writeTransaction( new TransactionWork<JSONObject>()
             {
                 @Override
@@ -64,8 +64,8 @@ public class Query implements AutoCloseable
 
 						
 					} catch (NoSuchRecordException e) {
-
-						e.printStackTrace();
+						//e.printStackTrace();
+						throw e;
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -74,6 +74,9 @@ public class Query implements AutoCloseable
                 }
             } );
 
+        } catch (NoSuchRecordException e) {
+			//e.printStackTrace();
+			throw e;
         }
 		return actorGet;
     }
@@ -112,8 +115,8 @@ public class Query implements AutoCloseable
 
 						
 					} catch (NoSuchRecordException e) {
-
-						e.printStackTrace();
+						//e.printStackTrace();
+						throw e;
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -122,6 +125,9 @@ public class Query implements AutoCloseable
                 }
             } );
 
+        } catch(NoSuchRecordException e){
+        	//e.printStackTrace();
+        	throw e;
         }
 		return movieGet;
     }
