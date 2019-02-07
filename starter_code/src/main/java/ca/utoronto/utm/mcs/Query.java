@@ -134,7 +134,7 @@ public class Query implements AutoCloseable
                 @Override
                 public JSONObject execute( Transaction tx )
                 {
-                	tx.run("CREATE (a:actor {actorId:$aId, name: $aName})",
+                	tx.run("MERGE (a:actor {actorId:$aId, name: $aName})",
                 			parameters("aId",actorId, "aName",actorN));
                 	JSONObject not = new JSONObject();
 					return not;
@@ -154,7 +154,7 @@ public class Query implements AutoCloseable
                 @Override
                 public JSONObject execute( Transaction tx )
                 {
-                	tx.run("CREATE (m:movie {movieId:$mId, name: $mName})",
+                	tx.run("MERGE (m:movie {movieId:$mId, name: $mName})",
                 			parameters("mId",movieId, "mName",movieN));
                 	JSONObject not = new JSONObject();
 					return not;
