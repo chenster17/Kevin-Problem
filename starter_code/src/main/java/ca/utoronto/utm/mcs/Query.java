@@ -172,8 +172,71 @@ public class Query implements AutoCloseable
         }
 		
 }
+	public JSONObject hasRelation(String actorId, String movieId) {
+
+    	JSONObject relationGet=new JSONObject();
+        try ( Session session = driver.session() )
+        {
+        	relationGet = session.writeTransaction( new TransactionWork<JSONObject>()
+            {
+                @Override
+                public JSONObject execute( Transaction tx )
+                {
+           
+                	StatementResult resultRelationship =  tx.run(
+                									"match (a:actor{actorId:$aId}),(m:movie{movieId:$mId}) return exists ((a)-[:ACTED_IN]->(m));",
+                            parameters( "aId",actorId,"mId", movieId) );
+                                      
+                	JSONObject rGJO = new JSONObject();
+
+  
+					try {
+						rGJO = new JSONObject();
+						rGJO.accumulate("actorId",actorId);
+						rGJO.accumulate("movieId",movieId);
+						rGJO.accumulate("hasRelationship",resultRelationship.single().get(0).asObject());
 
 
+						
+					} catch (NoSuchRecordException e) {
+						//e.printStackTrace();
+						throw e;
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+
+                    return rGJO;
+                }
+            } );
+
+        } catch(NoSuchRecordException e){
+        	//e.printStackTrace();
+        	throw e;
+        }
+		return relationGet;
+	}
+
+	public void putRelation(String actorId, String movieId) {
+        try ( Session session = driver.session() )
+        {
+        	session.writeTransaction( new TransactionWork<JSONObject>()
+            {
+                @Override
+                public JSONObject execute( Transaction tx )
+                {
+                	tx.run("match (a:actor{actorId:$aId}),(m:movie{movieId:$mId})"+
+                			"merge ((a)-[:ACTED_IN]->(m));",
+                			parameters("aId",actorId, "mId",movieId));
+                	JSONObject not = new JSONObject();
+					return not;
+                
+
+                }
+            } );
+
+        }
+		
+}
 
 	
 }
