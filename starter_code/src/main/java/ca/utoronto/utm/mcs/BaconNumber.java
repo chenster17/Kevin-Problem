@@ -48,7 +48,7 @@ public class BaconNumber implements HttpHandler{
         } catch (NoSuchRecordException e){
         	r.sendResponseHeaders(404, -1);
         	return;
-        }
+        } 
 
         r.sendResponseHeaders(200, res.toString().length());
         OutputStream os = r.getResponseBody();
