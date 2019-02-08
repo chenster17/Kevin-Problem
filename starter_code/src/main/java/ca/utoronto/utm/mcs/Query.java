@@ -63,20 +63,18 @@ public class Query implements AutoCloseable
 						aGJO.accumulate("name",resultActorName.single().get(0).asObject());
 
 						
-					} catch (NoSuchRecordException e) {
-						//e.printStackTrace();
-						throw e;
 					} catch (JSONException e) {
 						e.printStackTrace();
+					} catch(Exception e){
+						throw e;
 					}
 
                     return aGJO;
                 }
             } );
 
-        } catch (NoSuchRecordException e) {
-			//e.printStackTrace();
-			throw e;
+        } catch (Exception e){
+        	throw e;
         }
 		return actorGet;
     }
@@ -114,18 +112,17 @@ public class Query implements AutoCloseable
 						mGJO.accumulate("name",resultMovieName.single().get(0).asObject());
 
 						
-					} catch (NoSuchRecordException e) {
-						//e.printStackTrace();
-						throw e;
-					} catch (JSONException e) {
+					}  catch (JSONException e) {
 						e.printStackTrace();
-					}
+					} catch (Exception e){
+			        	throw e;
+			        }
 
                     return mGJO;
                 }
             } );
 
-        } catch(NoSuchRecordException e){
+        } catch(Exception e){
         	//e.printStackTrace();
         	throw e;
         }
@@ -149,6 +146,8 @@ public class Query implements AutoCloseable
                 }
             } );
 
+        } catch (Exception e){
+        	throw e;
         }
 		
 }
@@ -169,6 +168,8 @@ public class Query implements AutoCloseable
                 }
             } );
 
+        } catch (Exception e){
+        	throw e;
         }
 		
 }
@@ -198,18 +199,17 @@ public class Query implements AutoCloseable
 
 
 						
-					} catch (NoSuchRecordException e) {
-						//e.printStackTrace();
-						throw e;
 					} catch (JSONException e) {
 						e.printStackTrace();
-					}
+					} catch (Exception e){
+			        	throw e;
+			        }
 
                     return rGJO;
                 }
             } );
 
-        } catch(NoSuchRecordException e){
+        } catch(Exception e){
         	//e.printStackTrace();
         	throw e;
         }
@@ -234,6 +234,8 @@ public class Query implements AutoCloseable
                 }
             } );
 
+        } catch (Exception e){
+        	throw e;
         }
 		
 }
