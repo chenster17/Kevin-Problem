@@ -12,7 +12,6 @@ import org.neo4j.driver.v1.exceptions.NoSuchRecordException;
 import org.json.*;
 import static org.neo4j.driver.v1.Values.parameters;
 import java.util.*;
-import java.util.List;
 
 public class BaconQuery implements AutoCloseable
 {
@@ -31,36 +30,25 @@ public class BaconQuery implements AutoCloseable
 
     public JSONObject getBaconNumber( final String actorId )
     {
-    	JSONObject actorGet=new JSONObject();
+    	JSONObject baconNum=new JSONObject();
         try ( Session session = driver.session() )
         {	
-        	actorGet = session.writeTransaction( new TransactionWork<JSONObject>()
+        	baconNum = session.writeTransaction( new TransactionWork<JSONObject>()
             {
                 @Override
                 public JSONObject execute( Transaction tx )
                 {
-                	StatementResult resultMovie =  tx.run(
-                									"MATCH (a:actor {actorId:$aId})-[r:ACTED_IN]->(movies)"+
-                    								" return movies.movieId;",
+                	StatementResult resultBaconNumber =  tx.run(
+                									"MATCH p=shortestPath((a:actor {actorId:\"nm0000102\"})-[*]-(b:actor {actorId:$aId}))" + 
+                									"return length([h in nodes(p) WHERE h:actor])",
                             parameters( "aId", actorId) );
-                	StatementResult resultActorId =  tx.run(
-													"MATCH (a:actor {actorId:$aId}) return distinct a.actorId;" ,
-							parameters( "aId", actorId) );
-                	StatementResult resultActorName =  tx.run(
-													"MATCH (a:actor {actorId:$aId}) return distinct a.name;" ,
-							parameters( "aId", actorId) );
-                                      
 
-                	JSONObject aGJO = new JSONObject();
-                	List <Record> myGAList = resultMovie.list();
+                                     
+
+                	JSONObject bNJO = new JSONObject();
                 
 					try {
-						aGJO = new JSONObject();
-						for(int i= 0; i<myGAList.size();i++) {
-							aGJO.accumulate("movies", myGAList.get(i).get(0).asObject());
-						}
-						aGJO.accumulate("actorId",resultActorId.single().get(0).asObject());
-						aGJO.accumulate("name",resultActorName.single().get(0).asObject());
+						bNJO.accumulate("baconNumber",(resultBaconNumber.single().get(0).asInt()-1));
 
 						
 					} catch (NoSuchRecordException e) {
@@ -70,7 +58,7 @@ public class BaconQuery implements AutoCloseable
 						e.printStackTrace();
 					}
 
-                    return aGJO;
+                    return bNJO;
                 }
             } );
 
@@ -78,5 +66,72 @@ public class BaconQuery implements AutoCloseable
 			//e.printStackTrace();
 			throw e;
         }
-		return actorGet;
-    }}
+		return baconNum;
+   }
+    public JSONObject getBaconPath( final String actorId )
+    {
+    	JSONObject baconPath=new JSONObject();
+        try ( Session session = driver.session() )
+        {	
+        	baconPath = session.writeTransaction( new TransactionWork<JSONObject>()
+            {
+                @Override
+                public JSONObject execute( Transaction tx )
+                {
+                	StatementResult resultBaconNumber =  tx.run(
+													"MATCH p=shortestPath((a:actor {Id:\"nm0000102\"})-[*]-(b:actor {Id:$aId}))" + 
+													"return length([h in nodes(p) WHERE h:actor])",
+							parameters( "aId", actorId) );
+                	StatementResult resultFullBaconNumber =  tx.run(
+													"MATCH p=shortestPath((a:actor {Id:\"nm0000102\"})-[*]-(b:actor {Id:$aId}))" + 
+													"return length(p)",
+							parameters( "aId", actorId) );               	
+                	StatementResult resultBaconPath =  tx.run(
+                									"MATCH p=shortestPath((a:actor {Id:\"nm0000102\"})-[*]-(b:actor {Id:$aId}))" + 
+                									"return  [n In nodes (p) | n.Id]",
+                            parameters( "aId", actorId) );
+
+                                     
+
+                	JSONObject bPJO = new JSONObject();
+                	List <JSONObject> myBPath = new ArrayList <JSONObject>();
+                	List <Record> myBPList = resultBaconPath.list();
+                	
+
+                	int size = resultFullBaconNumber.single().get(0).asInt();
+                
+					try {
+						bPJO.accumulate("baconNumber",resultBaconNumber.single().get(0).asInt()-1);
+						for (int i=0;i<(size/2);i++) {
+							JSONObject temp = new JSONObject();
+							temp.accumulate("actorId", myBPList.get(0).get(0).get(0+(i*2)).asObject());
+							temp.accumulate("movieId", myBPList.get(0).get(0).get(1+(i*2)).asObject());
+							myBPath.add(temp);
+						}
+						Collections.reverse(myBPath);
+						bPJO.accumulate("baconPath", myBPath);
+						
+						 
+
+						
+					} catch (NoSuchRecordException e) {
+						//e.printStackTrace();
+						throw e;
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+
+                    return bPJO;
+                }
+            } );
+
+        } catch (NoSuchRecordException e) {
+			//e.printStackTrace();
+			throw e;
+        }
+		return baconPath;
+   }
+    
+
+
+}
