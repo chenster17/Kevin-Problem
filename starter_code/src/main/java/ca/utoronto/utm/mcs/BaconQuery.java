@@ -39,7 +39,7 @@ public class BaconQuery implements AutoCloseable
                 public JSONObject execute( Transaction tx )
                 {
                 	StatementResult resultBaconNumber =  tx.run(
-                									"MATCH p=shortestPath((a:actor {actorId:\"nm0000102\"})-[*]-(b:actor {actorId:$aId}))" + 
+                									"MATCH p=shortestPath((a:actor {Id:\"nm0000102\"})-[*]-(b:actor {Id:$aId}))" + 
                 									"return length([h in nodes(p) WHERE h:actor])",
                             parameters( "aId", actorId) );
 
