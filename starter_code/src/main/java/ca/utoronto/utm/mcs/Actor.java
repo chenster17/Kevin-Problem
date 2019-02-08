@@ -32,12 +32,13 @@ public class Actor implements HttpHandler
         String body = Utils.convert(r.getRequestBody());
         JSONObject deserialized = new JSONObject(body);
         
-        String actorId;
+        String actorId ="";
         JSONObject res = new JSONObject();
         if(deserialized.has("actorId") && deserialized.get("actorId") instanceof String){
         	actorId = deserialized.getString("actorId");	
         }    
         else{
+        	System.out.println(actorId);
         	r.sendResponseHeaders(400,-1);
         	return;
         }

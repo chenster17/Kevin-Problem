@@ -38,11 +38,13 @@ public class Query implements AutoCloseable
             {
                 @Override
                 public JSONObject execute( Transaction tx )
-                {
+                {	
+
                 	StatementResult resultMovie =  tx.run(
                 									"MATCH (a:actor {id:$aId})-[r:ACTED_IN]->(movies)"+
                     								" return movies.id;",
                             parameters( "aId", actorId) );
+                	 
                 	StatementResult resultActorId =  tx.run(
 													"MATCH (a:actor {id:$aId}) return distinct a.id;" ,
 							parameters( "aId", actorId) );

@@ -39,7 +39,7 @@ public class BaconQuery implements AutoCloseable
                 public JSONObject execute( Transaction tx )
                 {
                 	StatementResult resultBaconNumber =  tx.run(
-                									"MATCH p=shortestPath((a:actor {Id:\"nm0000102\"})-[*]-(b:actor {Id:$aId}))" + 
+                									"MATCH p=shortestPath((a:actor {id:\"nm0000102\"})-[*]-(b:actor {id:$aId}))" + 
                 									"return length([h in nodes(p) WHERE h:actor])",
                             parameters( "aId", actorId) );
 
@@ -52,7 +52,7 @@ public class BaconQuery implements AutoCloseable
 
 						
 					} catch (NoSuchRecordException e) {
-						//e.printStackTrace();
+						e.printStackTrace();
 						throw e;
 					} catch (JSONException e) {
 						e.printStackTrace();
@@ -79,15 +79,15 @@ public class BaconQuery implements AutoCloseable
                 public JSONObject execute( Transaction tx )
                 {
                 	StatementResult resultBaconNumber =  tx.run(
-													"MATCH p=shortestPath((a:actor {Id:\"nm0000102\"})-[*]-(b:actor {Id:$aId}))" + 
+													"MATCH p=shortestPath((a:actor {id:\"nm0000102\"})-[*]-(b:actor {id:$aId}))" + 
 													"return length([h in nodes(p) WHERE h:actor])",
 							parameters( "aId", actorId) );
                 	StatementResult resultFullBaconNumber =  tx.run(
-													"MATCH p=shortestPath((a:actor {Id:\"nm0000102\"})-[*]-(b:actor {Id:$aId}))" + 
+													"MATCH p=shortestPath((a:actor {id:\"nm0000102\"})-[*]-(b:actor {id:$aId}))" + 
 													"return length(p)",
 							parameters( "aId", actorId) );               	
                 	StatementResult resultBaconPath =  tx.run(
-                									"MATCH p=shortestPath((a:actor {Id:\"nm0000102\"})-[*]-(b:actor {Id:$aId}))" + 
+                									"MATCH p=shortestPath((a:actor {id:\"nm0000102\"})-[*]-(b:actor {id:$aId}))" + 
                 									"return  [n In nodes (p) | n.Id]",
                             parameters( "aId", actorId) );
 
