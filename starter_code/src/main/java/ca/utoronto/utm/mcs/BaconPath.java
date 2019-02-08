@@ -9,7 +9,7 @@ import org.neo4j.driver.v1.exceptions.NoSuchRecordException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-public class Bacon implements HttpHandler{
+public class BaconPath implements HttpHandler{
 	
 	public void handle(HttpExchange r) throws IOException {
 		
