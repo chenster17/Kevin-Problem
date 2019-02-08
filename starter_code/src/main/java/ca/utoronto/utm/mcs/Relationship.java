@@ -52,6 +52,8 @@ public class Relationship implements HttpHandler
         } catch (NoSuchRecordException e){
         	r.sendResponseHeaders(404, -1);
         	return;
+        } catch (Exception e){
+        	throw e;
         }
 
         r.sendResponseHeaders(200, res.toString().length());

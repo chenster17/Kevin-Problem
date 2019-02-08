@@ -40,14 +40,14 @@ public class Query implements AutoCloseable
                 public JSONObject execute( Transaction tx )
                 {
                 	StatementResult resultMovie =  tx.run(
-                									"MATCH (a:actor {Id:$aId})-[r:ACTED_IN]->(movies)"+
-                    								" return movies.Id;",
+                									"MATCH (a:actor {id:$aId})-[r:ACTED_IN]->(movies)"+
+                    								" return movies.id;",
                             parameters( "aId", actorId) );
                 	StatementResult resultActorId =  tx.run(
-													"MATCH (a:actor {Id:$aId}) return distinct a.Id;" ,
+													"MATCH (a:actor {id:$aId}) return distinct a.id;" ,
 							parameters( "aId", actorId) );
                 	StatementResult resultActorName =  tx.run(
-													"MATCH (a:actor {Id:$aId}) return distinct a.name;" ,
+													"MATCH (a:actor {id:$aId}) return distinct a.name;" ,
 							parameters( "aId", actorId) );
                                       
 
@@ -89,14 +89,14 @@ public class Query implements AutoCloseable
                 public JSONObject execute( Transaction tx )
                 {
                 	StatementResult resultActor =  tx.run(
-                									"MATCH (m:movie {Id:$mId})<-[r:ACTED_IN]-(actors)"+
-                    								" return actors.Id;",
+                									"MATCH (m:movie {id:$mId})<-[r:ACTED_IN]-(actors)"+
+                    								" return actors.id;",
                             parameters( "mId", movieId) );
                 	StatementResult resultMovieId =  tx.run(
-													"MATCH (m:movie {Id:$mId}) return distinct m.Id;" ,
+													"MATCH (m:movie {id:$mId}) return distinct m.id;" ,
 							parameters( "mId", movieId) );
                 	StatementResult resultMovieName =  tx.run(
-													"MATCH (m:movie {Id:$mId}) return distinct m.name;" ,
+													"MATCH (m:movie {id:$mId}) return distinct m.name;" ,
 							parameters( "mId", movieId) );
                                       
 
@@ -137,7 +137,7 @@ public class Query implements AutoCloseable
                 @Override
                 public JSONObject execute( Transaction tx )
                 {
-                	tx.run("MERGE (a:actor {Id:$aId, name: $aName})",
+                	tx.run("MERGE (a:actor {id:$aId, name: $aName})",
                 			parameters("aId",actorId, "aName",actorN));
                 	JSONObject not = new JSONObject();
 					return not;
@@ -159,7 +159,7 @@ public class Query implements AutoCloseable
                 @Override
                 public JSONObject execute( Transaction tx )
                 {
-                	tx.run("MERGE (m:movie {Id:$mId, name: $mName})",
+                	tx.run("MERGE (m:movie {id:$mId, name: $mName})",
                 			parameters("mId",movieId, "mName",movieN));
                 	JSONObject not = new JSONObject();
 					return not;
@@ -185,14 +185,14 @@ public class Query implements AutoCloseable
                 {
            
                 	StatementResult resultRelationship =  tx.run(
-                									"match (a:actor{Id:$aId}),(m:movie{Id:$mId}) return exists ((a)-[:ACTED_IN]->(m));",
+                									"match (a:actor{id:$aId}),(m:movie{id:$mId}) return exists ((a)-[:ACTED_IN]->(m));",
                             parameters( "aId",actorId,"mId", movieId) );
                                       
                 	JSONObject rGJO = new JSONObject();
 
   
 					try {
-						rGJO = new JSONObject();
+						//rGJO = new JSONObject();
 						rGJO.accumulate("actorId",actorId);
 						rGJO.accumulate("movieId",movieId);
 						rGJO.accumulate("hasRelationship",resultRelationship.single().get(0).asObject());
@@ -223,26 +223,33 @@ public class Query implements AutoCloseable
             {
                 @Override
                 public JSONObject execute( Transaction tx )
-                {
-                	tx.run("match (a:actor{Id:$aId}),(m:movie{Id:$mId})"+
+                {	
+                	StatementResult resultRelationship = tx.run("match (a:actor{id:$aId}),(m:movie{id:$mId}) return exists ((a)-[:ACTED_IN]->(m));",
+                			parameters( "aId",actorId,"mId", movieId) );
+                	tx.run("match (a:actor{id:$aId}),(m:movie{id:$mId})"+
                 			"merge ((a)-[:ACTED_IN]->(m));",
                 			parameters("aId",actorId, "mId",movieId));
+               
+                	JSONObject not = new JSONObject();
                 	
                 	try{
-                	JSONObject not = new JSONObject();
-					return not;
+                	not.accumulate("actorId",actorId);
+					not.accumulate("movieId",movieId);
+					not.accumulate("hasRelationship",resultRelationship.single().get(0).asObject());
 					
+                	} catch(JSONException e){
+                		e.printStackTrace();
                 	} catch(Exception e){
                 		e.printStackTrace();
                 		throw e;
                 	}
                 
-
+                	return not;
                 }
             } );
 
         } catch (Exception e){
-        	e.printStackTrace();
+        	//e.printStackTrace();
         	throw e;
         }
 		

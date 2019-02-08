@@ -35,7 +35,7 @@ public class Actor implements HttpHandler
         String actorId;
         JSONObject res = new JSONObject();
         if(deserialized.has("actorId") && deserialized.get("actorId") instanceof String){
-        	actorId = deserialized.optString("actorId");	
+        	actorId = deserialized.getString("actorId");	
         }    
         else{
         	r.sendResponseHeaders(400,-1);
@@ -47,6 +47,7 @@ public class Actor implements HttpHandler
         {
         	res = actor.getActor( actorId );
         } catch (NoSuchRecordException e){
+        	e.printStackTrace();
         	r.sendResponseHeaders(404, -1);
         	return;
         } catch (Exception e){

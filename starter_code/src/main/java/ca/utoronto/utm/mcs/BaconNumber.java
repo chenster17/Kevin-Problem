@@ -16,7 +16,10 @@ public class BaconNumber implements HttpHandler{
             if (r.getRequestMethod().equals("GET")) {
                 handleGet(r);
             } 
-        } catch (Exception e) {
+        } catch (JSONException e){ //catch improper inputs
+        	e.printStackTrace();
+        	r.sendResponseHeaders(400, -1);
+        } catch (Exception e) { //catch any execution errors
             e.printStackTrace();
             r.sendResponseHeaders(500, -1);
         }
@@ -29,7 +32,7 @@ public class BaconNumber implements HttpHandler{
         
         String actorId = "";
         JSONObject res = new JSONObject();
-        if(deserialized.has("actorId") && deserialized.length() == 1){
+        if(deserialized.has("actorId") && deserialized.get("actorId") instanceof String){
         	actorId = deserialized.getString("actorId");
         }
         
