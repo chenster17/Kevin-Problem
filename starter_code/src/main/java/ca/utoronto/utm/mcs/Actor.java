@@ -19,7 +19,10 @@ public class Actor implements HttpHandler
             } else if (r.getRequestMethod().equals("PUT")) {
                 handlePut(r);
             }
-        } catch (Exception e) {
+        } catch (JSONException e){ //catch improper inputs
+        	e.printStackTrace();
+        	r.sendResponseHeaders(400, -1);
+        } catch (Exception e) { // catch any execution errors
             e.printStackTrace();
             r.sendResponseHeaders(500, -1);
         }
@@ -29,12 +32,11 @@ public class Actor implements HttpHandler
         String body = Utils.convert(r.getRequestBody());
         JSONObject deserialized = new JSONObject(body);
         
-        String actorId = "";
+        String actorId;
         JSONObject res = new JSONObject();
-        if(deserialized.has("actorId") && deserialized.length() == 1){
-        	actorId = deserialized.getString("actorId");
-        }
-        
+        if(deserialized.has("actorId") && deserialized.get("actorId") instanceof String){
+        	actorId = deserialized.optString("actorId");	
+        }    
         else{
         	r.sendResponseHeaders(400,-1);
         	return;
@@ -47,6 +49,8 @@ public class Actor implements HttpHandler
         } catch (NoSuchRecordException e){
         	r.sendResponseHeaders(404, -1);
         	return;
+        } catch (Exception e){
+        	throw e;
         }
 
         r.sendResponseHeaders(200, res.toString().length());
@@ -61,7 +65,8 @@ public class Actor implements HttpHandler
         JSONObject deserialized = new JSONObject(body);
         String actorId = "";
         String actorN = "";
-        if (deserialized.has("actorId") && deserialized.has("name") && deserialized.length() == 2) {
+        if (deserialized.has("actorId") && deserialized.has("name")
+        		&& deserialized.get("actorId") instanceof String && deserialized.get("name") instanceof String) {
         	actorId = deserialized.getString("actorId");
         	actorN = deserialized.getString("name");
         }
@@ -72,6 +77,8 @@ public class Actor implements HttpHandler
         try ( Query actor = new Query( "bolt://localhost:7687", "neo4j", "a" ) )
         {
         	actor.putActor( actorId , actorN);
+        } catch (Exception e){
+        	throw e;
         }
         r.sendResponseHeaders(200, -1);
 

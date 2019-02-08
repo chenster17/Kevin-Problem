@@ -19,7 +19,10 @@ public class Movie implements HttpHandler
             } else if (r.getRequestMethod().equals("PUT")) {
                 handlePut(r);
             }
-        } catch (Exception e) {
+        } catch (JSONException e){ //catch improper inputs
+        	e.printStackTrace();
+        	r.sendResponseHeaders(400, -1);
+        } catch (Exception e) { //catch execution errors 
             e.printStackTrace();
             r.sendResponseHeaders(500, -1);
         }
@@ -31,7 +34,7 @@ public class Movie implements HttpHandler
         
         String movieId = "";
         JSONObject res = new JSONObject();
-        if (deserialized.has("movieId") && deserialized.length() == 1){
+        if (deserialized.has("movieId") && deserialized.get("movieId") instanceof String){
         	movieId = deserialized.getString("movieId");
         }
         else{
@@ -45,6 +48,8 @@ public class Movie implements HttpHandler
         } catch (NoSuchRecordException e){
         	r.sendResponseHeaders(404, -1);
         	return;
+        } catch (Exception e){
+        	throw e;
         }
 
         r.sendResponseHeaders(200, res.toString().length());
@@ -59,7 +64,8 @@ public class Movie implements HttpHandler
         JSONObject deserialized = new JSONObject(body);
         String movieId;
         String movieN;
-        if (deserialized.has("movieId") && deserialized.has("name") && deserialized.length() == 2) {
+        if (deserialized.has("movieId") && deserialized.has("name")
+        		&& deserialized.get("movieId") instanceof String && deserialized.get("name") instanceof String) {
         	movieId = deserialized.getString("movieId");
         	movieN = deserialized.getString("name");
         }
@@ -71,6 +77,8 @@ public class Movie implements HttpHandler
         try ( Query movie = new Query( "bolt://localhost:7687", "neo4j", "a" ) )
         {
         	movie.putMovie( movieId , movieN);
+        } catch(Exception e){
+        	throw e;
         }
         r.sendResponseHeaders(200, -1);
     }

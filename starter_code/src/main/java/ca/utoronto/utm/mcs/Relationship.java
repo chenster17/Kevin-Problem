@@ -19,7 +19,10 @@ public class Relationship implements HttpHandler
             } else if (r.getRequestMethod().equals("PUT")) {
                 handlePut(r);
             }
-		} catch(Exception e) {
+		} catch (JSONException e){ //catch improper inputs
+			e.printStackTrace();
+			r.sendResponseHeaders(400, -1);
+		} catch(Exception e) { //catch execution errors
 			e.printStackTrace();
 			r.sendResponseHeaders(500,-1);
 		}
@@ -34,7 +37,8 @@ public class Relationship implements HttpHandler
 		String movieId = "";
 		JSONObject res = new JSONObject();
 		
-		if (deserialized.has("actorId") && deserialized.has("movieId") && deserialized.length() == 2) {
+		if (deserialized.has("actorId") && deserialized.has("movieId")
+				&& deserialized.get("movieId") instanceof String && deserialized.get("actorId") instanceof String) {
         	actorId = deserialized.getString("actorId");
         	movieId = deserialized.getString("movieId");
         }
@@ -65,7 +69,8 @@ public class Relationship implements HttpHandler
 		String movieId = "";
 		JSONObject res = new JSONObject();
 		
-		if (deserialized.has("actorId") && deserialized.has("movieId") && deserialized.length() == 2) {
+		if (deserialized.has("actorId") && deserialized.has("movieId")
+				&& deserialized.get("movieId") instanceof String && deserialized.get("actorId") instanceof String) {
         	actorId = deserialized.getString("actorId");
         	movieId = deserialized.getString("movieId");
         }
