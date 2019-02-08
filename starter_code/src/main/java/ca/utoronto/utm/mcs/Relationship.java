@@ -81,6 +81,11 @@ public class Relationship implements HttpHandler
         try ( Query relation = new Query( "bolt://localhost:7687", "neo4j", "a" ) )
         {
         	relation.putRelation( actorId , movieId);
+        } catch (NoSuchRecordException e){
+        	r.sendResponseHeaders(404, -1);
+        	return;
+        } catch (Exception e){
+        	throw e;
         }
         r.sendResponseHeaders(200, -1);
 	}

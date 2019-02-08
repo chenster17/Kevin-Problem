@@ -227,14 +227,22 @@ public class Query implements AutoCloseable
                 	tx.run("match (a:actor{Id:$aId}),(m:movie{Id:$mId})"+
                 			"merge ((a)-[:ACTED_IN]->(m));",
                 			parameters("aId",actorId, "mId",movieId));
+                	
+                	try{
                 	JSONObject not = new JSONObject();
 					return not;
+					
+                	} catch(Exception e){
+                		e.printStackTrace();
+                		throw e;
+                	}
                 
 
                 }
             } );
 
         } catch (Exception e){
+        	e.printStackTrace();
         	throw e;
         }
 		
