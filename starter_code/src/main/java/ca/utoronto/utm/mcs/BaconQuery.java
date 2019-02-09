@@ -131,7 +131,7 @@ public class BaconQuery implements AutoCloseable
                 	JSONObject bPJO = new JSONObject();
                 	List <JSONObject> myBPath = new ArrayList <JSONObject>();
                 	List <Record> myBPList = resultBaconPath.list();
-                	System.out.println(myBPList.toString());
+
                 	
 
                 	int size = resultFullBaconNumber.single().get(0).asInt();
