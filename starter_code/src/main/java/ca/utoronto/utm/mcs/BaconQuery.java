@@ -123,7 +123,7 @@ public class BaconQuery implements AutoCloseable
 							parameters( "aId", actorId) );               	
                 	StatementResult resultBaconPath =  tx.run(
                 									"MATCH p=shortestPath((a:actor {id:\"nm0000102\"})-[*]-(b:actor {id:$aId}))" + 
-                									"return  [n In nodes (p) | n.Id]",
+                									"return  [n In nodes (p) | n.id]",
                             parameters( "aId", actorId) );
 
                                      
@@ -131,6 +131,7 @@ public class BaconQuery implements AutoCloseable
                 	JSONObject bPJO = new JSONObject();
                 	List <JSONObject> myBPath = new ArrayList <JSONObject>();
                 	List <Record> myBPList = resultBaconPath.list();
+                	System.out.println(myBPList.toString());
                 	
 
                 	int size = resultFullBaconNumber.single().get(0).asInt();
