@@ -28,8 +28,14 @@ public class BaconQuery implements AutoCloseable
         driver.close();
     }
 
-    public JSONObject getBaconNumber( final String actorId )
-    {
+    public JSONObject getBaconNumber( final String actorId ) throws Exception
+    {	
+    	try{
+    		checkActor(actorId);
+    	} catch(Exception e){
+    		throw e;
+    	}
+    	
     	JSONObject baconNum=new JSONObject();
     	if(actorId.equals("nm0000102")) {
     		try {
@@ -37,6 +43,7 @@ public class BaconQuery implements AutoCloseable
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				throw e;
 			}
     		return baconNum;
     	}
@@ -61,6 +68,7 @@ public class BaconQuery implements AutoCloseable
 
 						
 					} catch (NoSuchRecordException e) {
+						System.out.println("This one in here first");
 						e.printStackTrace();
 						throw e;
 					} catch (JSONException e) {
@@ -72,13 +80,20 @@ public class BaconQuery implements AutoCloseable
             } );
 
         } catch (NoSuchRecordException e) {
-			//e.printStackTrace();
+        	System.out.println("it has to be this one");
+			e.printStackTrace();
 			throw e;
         }
 		return baconNum;
    }
-    public JSONObject getBaconPath( final String actorId )
+    public JSONObject getBaconPath( final String actorId ) throws Exception
     {
+    	try{
+    		checkActor(actorId);
+    	} catch(Exception e){
+    		throw e;
+    	}
+    	
     	JSONObject baconPath=new JSONObject();
     	if(actorId.equals("nm0000102")) {
     		List <JSONObject> myBPath = new ArrayList <JSONObject>();
@@ -151,6 +166,47 @@ public class BaconQuery implements AutoCloseable
         }
 		return baconPath;
    }
+    
+    public JSONObject checkActor( final String actorId ) throws Exception
+    {
+    	JSONObject actorGet=new JSONObject();
+        try ( Session session = driver.session() )
+        {	
+        	actorGet = session.writeTransaction( new TransactionWork<JSONObject>()
+            {
+                @Override
+                public JSONObject execute( Transaction tx )
+                {	
+
+                	StatementResult resultActor =  tx.run(
+													"MATCH (a:actor {id:$aId}) return a;" ,
+							parameters( "aId", actorId) );
+
+                                      
+
+                	JSONObject aGJO = new JSONObject();
+
+                
+					try {
+						aGJO = new JSONObject();
+						
+						aGJO.accumulate("actorId",resultActor.single().get(0).asObject());
+	
+					} catch (JSONException e) {
+						e.printStackTrace();
+					} catch(Exception e){
+						throw e;
+					}
+
+                    return aGJO;
+                }
+            } );
+
+        } catch (NoSuchRecordException e){
+        	throw new ActorNotFoundException("ActorId not fouind");
+        }
+		return actorGet;
+    }
     
 
 

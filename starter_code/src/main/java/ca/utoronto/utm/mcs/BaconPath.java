@@ -16,6 +16,9 @@ public class BaconPath implements HttpHandler{
             if (r.getRequestMethod().equals("GET")) {
                 handleGet(r);
             } 
+        } catch (JSONException e){ //catch improper inputs
+        	e.printStackTrace();
+        	r.sendResponseHeaders(400, -1);
         } catch (Exception e) {
             e.printStackTrace();
             r.sendResponseHeaders(500, -1);
@@ -29,7 +32,7 @@ public class BaconPath implements HttpHandler{
         
         String actorId = "";
         JSONObject res = new JSONObject();
-        if(deserialized.has("actorId") && deserialized.length() == 1){
+        if(deserialized.has("actorId") && deserialized.get("actorId") instanceof String){
         	actorId = deserialized.getString("actorId");
         }
         
@@ -42,9 +45,14 @@ public class BaconPath implements HttpHandler{
         try ( BaconQuery actor = new BaconQuery( "bolt://localhost:7687", "neo4j", "a" ) )
         {
         	res = actor.getBaconPath( actorId );
+        } catch (ActorNotFoundException e){ //if the actorid doesn't exist
+        	r.sendResponseHeaders(400, -1);
+        	return;
         } catch (NoSuchRecordException e){
         	r.sendResponseHeaders(404, -1);
         	return;
+        } catch (Exception e){
+        	throw e;
         }
 
         r.sendResponseHeaders(200, res.toString().length());

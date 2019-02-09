@@ -45,10 +45,16 @@ public class BaconNumber implements HttpHandler{
         try ( BaconQuery actor = new BaconQuery( "bolt://localhost:7687", "neo4j", "a" ) )
         {
         	res = actor.getBaconNumber( actorId );
-        } catch (NoSuchRecordException e){
+        } catch (ActorNotFoundException e){ //if the actorid doesn't exist
+        	r.sendResponseHeaders(400, -1);
+        	return;
+        } catch (NoSuchRecordException e){ //if the path does not exist
+        
         	r.sendResponseHeaders(404, -1);
         	return;
-        } 
+        } catch (Exception e){
+        	throw e;
+        }
 
         r.sendResponseHeaders(200, res.toString().length());
         OutputStream os = r.getResponseBody();
