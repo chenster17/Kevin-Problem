@@ -149,7 +149,8 @@ public class Query implements AutoCloseable
                 				parameters("aId",actorId, "aName",actorN));
                 	}
                 	else {
-                		System.out.println("no");
+                		tx.run("match(a:actor{id:$aId}) set a.name = $aName",
+                				parameters("aId",actorId, "aName",actorN));
                 	}
                 	JSONObject not = new JSONObject();
 					return not;
@@ -180,7 +181,8 @@ public class Query implements AutoCloseable
                 				parameters("mId",movieId, "mName",movieN));
                 	}
                 	else {
-                		System.out.println("no");
+                		tx.run("match(m:movie{id:$mId}) set m.name = $mName",
+                				parameters("mId",movieId, "mName",movieN));
                 	}
                 	JSONObject not = new JSONObject();
 					return not;
