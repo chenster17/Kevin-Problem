@@ -31,6 +31,15 @@ public class BaconQuery implements AutoCloseable
     public JSONObject getBaconNumber( final String actorId )
     {
     	JSONObject baconNum=new JSONObject();
+    	if(actorId.equals("nm0000102")) {
+    		try {
+    			baconNum.accumulate("baconNumber","0");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		return baconNum;
+    	}
         try ( Session session = driver.session() )
         {	
         	baconNum = session.writeTransaction( new TransactionWork<JSONObject>()
@@ -46,9 +55,9 @@ public class BaconQuery implements AutoCloseable
                                      
 
                 	JSONObject bNJO = new JSONObject();
-                
+                	int bNum =resultBaconNumber.single().get(0).asInt()-1;
 					try {
-						bNJO.accumulate("baconNumber",(resultBaconNumber.single().get(0).asInt()-1));
+						bNJO.accumulate("baconNumber",Integer.toString(bNum));
 
 						
 					} catch (NoSuchRecordException e) {
@@ -71,6 +80,17 @@ public class BaconQuery implements AutoCloseable
     public JSONObject getBaconPath( final String actorId )
     {
     	JSONObject baconPath=new JSONObject();
+    	if(actorId.equals("nm0000102")) {
+    		List <JSONObject> myBPath = new ArrayList <JSONObject>();
+    		try {
+				baconPath.accumulate("baconNumber",0);
+				baconPath.accumulate("baconPath",myBPath);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		return baconPath;
+    	}
         try ( Session session = driver.session() )
         {	
         	baconPath = session.writeTransaction( new TransactionWork<JSONObject>()
