@@ -139,8 +139,18 @@ public class Query implements AutoCloseable
                 @Override
                 public JSONObject execute( Transaction tx )
                 {
-                	tx.run("MERGE (a:actor {id:$aId, name: $aName})",
-                			parameters("aId",actorId, "aName",actorN));
+                	StatementResult check =  tx.run(
+							"MATCH (a:actor {id:$aId})"+
+							" return a;",
+							parameters( "aId", actorId) );
+                	
+                	if (check.list().isEmpty()){
+                		tx.run("MERGE (a:actor {id:$aId, name: $aName})",
+                				parameters("aId",actorId, "aName",actorN));
+                	}
+                	else {
+                		System.out.println("no");
+                	}
                 	JSONObject not = new JSONObject();
 					return not;
                 
@@ -161,8 +171,17 @@ public class Query implements AutoCloseable
                 @Override
                 public JSONObject execute( Transaction tx )
                 {
-                	tx.run("MERGE (m:movie {id:$mId, name: $mName})",
-                			parameters("mId",movieId, "mName",movieN));
+                	StatementResult check =  tx.run(
+							"MATCH (m:movie {id:$mId})"+
+							" return m;",
+							parameters( "mId", movieId) );
+                	if (check.list().isEmpty()){
+                		tx.run("MERGE (m:movie {id:$mId, name: $mName})",
+                				parameters("mId",movieId, "mName",movieN));
+                	}
+                	else {
+                		System.out.println("no");
+                	}
                 	JSONObject not = new JSONObject();
 					return not;
                 
